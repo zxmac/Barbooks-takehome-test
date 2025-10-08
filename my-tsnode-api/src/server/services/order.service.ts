@@ -1,5 +1,22 @@
+
+import { PrismaClient } from "../../generated/prisma/client";
 import { Order } from "../models/order.model";
 import { Summary } from "../models/summary.model";
+
+const prisma = new PrismaClient();
+
+async function getOrders(): Promise<Order[]> {
+  try {
+    const result = await prisma.orders.findMany();
+    return result;
+  } catch (e) {
+    console.error(e)
+  } finally {
+    await prisma.$disconnect()
+  }
+  return [] as Order[];
+}
+
 
 function summarizeOrders(orders: Order[]): Summary {
   const totalRevenue = orders.reduce((sum, order) => sum + order.price * order.qty, 0);
@@ -31,4 +48,4 @@ function summarizeOrders(orders: Order[]): Summary {
   };
 }
 
-export { summarizeOrders };
+export { summarizeOrders, getOrders };
