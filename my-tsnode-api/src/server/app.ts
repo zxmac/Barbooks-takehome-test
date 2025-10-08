@@ -1,11 +1,13 @@
 import express from 'express';
 import cors from 'cors';
-import { router as testRouter } from "./routes/order";
+import { router as orderRouter } from "./routes/order";
+import { router as summaryRouter } from "./routes/summary";
+import { env } from './utils/env';
 
 const app = express();
 
 // CORS with allowlist
-const allowed = (process.env.CORS_ORIGINS || '').split(',').filter(Boolean);
+const allowed = (env.CORS_ORIGINS || '').split(',').filter(Boolean);
 app.use(cors({
   origin: (origin, cb) => {
     if (!origin || allowed.includes(origin)) return cb(null, true);
@@ -20,6 +22,8 @@ app.use(cors({
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: false, limit: '100kb' }));
 
-app.use('/api/order', testRouter);
+app.use('/api/order', orderRouter);
+
+app.use('/api/summary', summaryRouter);
 
 export default app;

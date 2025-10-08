@@ -17,6 +17,29 @@ async function getOrders(): Promise<Order[]> {
   return [] as Order[];
 }
 
+async function getOrder(id: number): Promise<Order | null> {
+  try {
+    const result = await prisma.orders.findFirst({ where: { id: id } });
+    return result;
+  } catch (e) {
+    console.error(e)
+  } finally {
+    await prisma.$disconnect()
+  }
+  return {} as Order;
+}
+
+async function createOrder(order: Order): Promise<Order> {
+  try {
+    const result = await prisma.orders.create({ data: order })
+    return result;
+  } catch (e) {
+    console.error(e)
+  } finally {
+    await prisma.$disconnect()
+  }
+  return {} as Order;
+}
 
 function summarizeOrders(orders: Order[]): Summary {
   const totalRevenue = orders.reduce((sum, order) => sum + order.price * order.qty, 0);
@@ -48,4 +71,4 @@ function summarizeOrders(orders: Order[]): Summary {
   };
 }
 
-export { summarizeOrders, getOrders };
+export { summarizeOrders, getOrders, createOrder, getOrder };

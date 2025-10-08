@@ -1,11 +1,12 @@
 import { createServer } from 'http';
 import app from "./server/app";
 import { PrismaClient } from "./generated/prisma/client"
+import { env } from './server/utils/env';
 const server = createServer(app);
 
-const PORT = 3000;
+const PORT = env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`API listening on port ${PORT} (env: ${process.env.NODE_ENV})`);
+  console.log(`API listening on port ${PORT} (env: ${env.NODE_ENV})`);
 });
 
 ['SIGINT', 'SIGTERM', 'uncaughtException', 'unhandledRejection'].forEach((sig) => {
