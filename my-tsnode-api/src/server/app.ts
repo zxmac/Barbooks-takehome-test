@@ -22,7 +22,7 @@ app.use(cors({
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: false, limit: '100kb' }));
 
-app.use('/api/order', orderRouter);
+app.use('/api/orders', orderRouter);
 
 app.use('/api/summary', summaryRouter);
 

@@ -1,21 +1,10 @@
 
 import { PrismaClient } from "../../generated/prisma/client";
 import { Order } from "../models/order.model";
+import { ParamFilter } from "../models/param.model";
 import { Summary } from "../models/summary.model";
 
 const prisma = new PrismaClient();
-
-async function getOrders(): Promise<Order[]> {
-  try {
-    const result = await prisma.orders.findMany();
-    return result;
-  } catch (e) {
-    console.error(e)
-  } finally {
-    await prisma.$disconnect()
-  }
-  return [] as Order[];
-}
 
 async function getOrder(id: number): Promise<Order | null> {
   try {
@@ -27,6 +16,31 @@ async function getOrder(id: number): Promise<Order | null> {
     await prisma.$disconnect()
   }
   return {} as Order;
+}
+
+async function getOrders(filter?: ParamFilter): Promise<Order[]> {
+  try {
+    const limit = 100;
+    const query = { take: limit, skip: 0 };    
+
+    if (filter) {
+      if (filter.offset >= 0 && !(filter.limit > limit)) {
+        (query as any).take = filter.limit;
+        (query as any).skip = filter.offset;
+      }
+      if (filter.product) {
+        (query as any).where = { product: filter.product };
+      }
+    }
+
+    const result = await prisma.orders.findMany(query);
+    return result;
+  } catch (e) {
+    console.error(e)
+  } finally {
+    await prisma.$disconnect()
+  }
+  return [];
 }
 
 async function createOrder(order: Order): Promise<Order> {

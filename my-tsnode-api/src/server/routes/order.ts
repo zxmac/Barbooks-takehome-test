@@ -1,14 +1,18 @@
 import { Router } from 'express';
-import { createOrder, getOrder, getOrders } from '../services/order.service';
+import { createOrder, getOrders } from '../services/order.service';
 export const router = Router();
 
 router.get('/', async (req: any, res: any) => {
-  const data = await getOrders();
-  res.json(data);
-});
+  const limit = req.query.limit ? parseInt(req.query.limit) : -1;
+  const offset = req.query.offset ? parseInt(req.query.offset) : -1;
+  const product = req.query.product ? req.query.product : null;
 
-router.get('/:id', async (req: any, res: any) => {
-  const data = await getOrder(parseInt(req.params.id));
+  const data = await getOrders({
+    limit: limit,
+    offset: offset,
+    product: product
+  });
+
   res.json(data);
 });
 
