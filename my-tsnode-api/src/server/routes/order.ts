@@ -7,19 +7,11 @@ router.get('/', async (req: any, res: any) => {
   const offset = req.query.offset ? parseInt(req.query.offset) : -1;
   const product = req.query.product ? req.query.product : null;
 
-  const data = await getOrders({
-    limit: limit,
-    offset: offset,
-    product: product
-  });
-
+  const data = await getOrders({ limit, offset, product });
   res.json(data);
 });
 
-router.post('/', async (req, res, next) => {
-    try {
-      const order = await createOrder(req.body);
-      res.status(201).json(order);
-    } catch (e) { next(e); }
-  }
-);
+router.post('/', async (req, res) => {
+  const order = await createOrder(req.body);
+  res.status(201).json(order);
+});

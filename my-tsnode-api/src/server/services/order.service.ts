@@ -60,22 +60,22 @@ function summarizeOrders(orders: Order[]): Summary {
   const prices = orders.map(order => order.price).sort((a, b) => a - b);
   const mid = Math.floor(prices.length / 2);
   const medianOrderPrice = prices.length % 2 !== 0 ? prices[mid] : (prices[mid - 1] + prices[mid]) / 2;
-  const topProductByQty = orders.reduce((obj, val) => {
-    if (!obj.qty) {
-      obj = { ...val };      
-    } else if (obj.product === val.product) {
-      obj.qty += val.qty;
-    } else if (obj.qty < val.qty) {
+  const uniqueOrders = orders.reduce((list, val) => {
+    const index = list.findIndex(x => x.product === val.product);
+    if (index > -1) {
+      list[index].qty += val.qty;
+    } else {
+      list.push({ ...val });
+    }
+    return list;
+  }, [] as Order[]);
+  const topProductByQty = uniqueOrders.reduce((obj, val) => {
+    if (!obj.product || obj.qty < val.qty) {
       obj = { ...val };
     }
     return obj;
   }, {} as Order);
-  const uniqueProductCount = orders.reduce((obj: Order[], val: Order) => {
-    if (!obj.find((o: Order) => o.product === val.product)) {
-      obj.push(val);
-    }
-    return obj;
-  }, []).length;
+  const uniqueProductCount = uniqueOrders.length;
   
   return {
     totalRevenue: totalRevenue ? totalRevenue : 0,

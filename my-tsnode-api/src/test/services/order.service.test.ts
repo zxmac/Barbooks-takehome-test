@@ -1,5 +1,6 @@
-import { Order } from "../models/order.model";
-import { summarizeOrders } from "../services/order.service";
+
+import { Order } from "../../server/models/order.model";
+import { summarizeOrders } from "../../server/services/order.service";
 
 describe('summarizeOrders', () => {
   it('should correctly summarize a typical list of orders', () => {
