@@ -1,6 +1,6 @@
 import { seed } from "../seed";
 import app from "../server/app";
-import request from 'supertest';
+import request from "supertest";
 
 beforeAll(async () => {
   await seed();
@@ -15,13 +15,35 @@ describe('GET /api/orders', () => {
   });
 });
 
+describe('GET paging /api/orders', () => {
+  const params = '?offset=0&limit=3';
+  it(`should return a list of orders: ${params}`, async () => {
+    const res = await request(app).get('/api/orders' + params);
+    expect(res.statusCode).toEqual(200);
+    
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body).toHaveLength(3);
+  });
+});
+
+describe('GET filter & paging /api/orders', () => {
+  const params = '?product=Apple&offset=0&limit=10';
+  it(`should return a list of orders: ${params}`, async () => {
+    const res = await request(app).get('/api/orders' + params);
+    expect(res.statusCode).toEqual(200);
+    
+    expect(Array.isArray(res.body)).toBe(true);
+    expect(res.body).toHaveLength(2);
+  });
+});
+
 describe('POST /api/orders', () => {
   it('should create a new order and return status 201', async () => {
     const newOrder = { product: 'Graprs', qty: 10, price: 1010 };
     const res = await request(app)
       .post('/api/orders')
       .send(newOrder)
-      .expect(201); // Assert HTTP status code
+      .expect(201);
 
     expect(res.body).toHaveProperty('id');
     expect(res.body.product).toBe(newOrder.product);

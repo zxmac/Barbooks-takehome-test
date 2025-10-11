@@ -20,16 +20,16 @@ async function getOrder(id: number): Promise<Order | null> {
 
 async function getOrders(filter?: ParamFilter): Promise<Order[]> {
   try {
-    const limit = 100;
-    const query = { take: limit, skip: 0 };    
+    const maxLimit = 1000;
+    const query: any = { take: maxLimit, skip: 0 };
 
     if (filter) {
-      if (filter.offset >= 0 && !(filter.limit > limit)) {
-        (query as any).take = filter.limit;
-        (query as any).skip = filter.offset;
+      if (filter.offset >= 0 && filter.limit > 0 && filter.limit < maxLimit) {
+        query.take = filter.limit;
+        query.skip = filter.offset;
       }
       if (filter.product) {
-        (query as any).where = { product: filter.product };
+        query.where = { product: filter.product };
       }
     }
 

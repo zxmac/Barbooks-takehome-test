@@ -1,6 +1,6 @@
 import { seed } from "../seed";
 import app from "../server/app";
-import request from 'supertest';
+import request from "supertest";
 
 beforeAll(async () => {
   await seed();
